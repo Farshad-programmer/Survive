@@ -6,8 +6,9 @@ struct player_stats
 {
 public:
 
-	int health = 100;
 	int level = 1;
+	int health = 50;
+	int hungry = 40;
 };
 
 
@@ -20,6 +21,7 @@ private:
 	std::string m_playerName;
 	std::string m_playerSex;
 	player_stats m_playerStats;
+	int m_restCounter = 0;
 
 	static constexpr std::size_t StorySize = 1000; 
 
@@ -35,5 +37,10 @@ public:
 	void InitializePlayerInformation();
 	void ShowPlayerStats();
 	void Story();
+	void MainDecision();
+	void Move();
+	void Rest();
+	bool CanRest();
+	void CleanConsole();
 };
 

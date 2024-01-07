@@ -9,8 +9,7 @@ class Game
 {
 private:
 
-	
-
+	bool m_bUpdate{false};
 	std::unique_ptr<Player> m_player;
 
 public:

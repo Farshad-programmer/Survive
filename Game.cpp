@@ -10,11 +10,14 @@ void Game::BeginPlay()
 {
 	m_player->InitializePlayerInformation();
 	m_player->Story();
-	m_player->ShowPlayerStats();
-	
+	m_bUpdate = true;
 }
 
 void Game::Tick()
 {
-
+	while (m_bUpdate)
+	{
+		m_player->ShowPlayerStats();
+		m_player->Tick();
+	}
 }

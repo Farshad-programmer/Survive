@@ -19,7 +19,7 @@ void Player::BeginPlay()
 
 void Player::Tick()
 {
-
+	MainDecision();
 }
 
 void Player::InitializePlayerInformation()
@@ -61,8 +61,9 @@ void Player::ShowPlayerStats()
 
 	std::cout << m_playerName << std::endl;
 	std::cout << "------------------------" << std::endl;
-	std::cout << "Health: " << m_playerStats.health << std::endl;
 	std::cout << "Level: " << m_playerStats.level<< std::endl;
+	std::cout << "Health: " << m_playerStats.health << std::endl;
+	std::cout << "Hungry: " << m_playerStats.hungry << std::endl;
 	std::cout << "------------------------" << std::endl;
 }
 
@@ -86,4 +87,69 @@ void Player::Story()
 	}
 
 	std::cout << "\n";
+}
+
+void Player::MainDecision()
+{
+	std::cout << "What do you do: \n";
+	std::cout << "1 - Move " << std::endl;
+	std::cout << "2 - Rest " << std::endl;
+	std::cout << "3 - Search " << std::endl;
+	int decision;
+	std::cin >> decision;
+	switch (decision)
+	{
+	case 1:
+		Move();
+		break;
+	case 2:
+		Rest();
+		break;
+	}
+}
+
+void Player::Move()
+{
+	CleanConsole();
+	std::cout << "You walked for about a kilometer." << std::endl;
+	m_playerStats.hungry -= 5;
+}
+
+void Player::Rest()
+{
+	CleanConsole();
+	
+	if(CanRest())
+	{
+		m_restCounter += 3;
+		std::cout << "You rested for a while." << std::endl;
+		m_playerStats.hungry -= 5;
+		m_playerStats.health += 10;
+		if (m_playerStats.health > 100)
+		{
+			m_playerStats.health = 100;
+		}
+	}
+	else
+	{
+		m_restCounter--;
+		std::cout << "I've rested enough, I can't stay here for too long. It's dangerous." << std::endl;
+	}
+}
+
+bool Player::CanRest()
+{
+	if(m_restCounter <= 6)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Player::CleanConsole()
+{
+	system("cls");
 }
