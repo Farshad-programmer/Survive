@@ -3,6 +3,8 @@
 #include <conio.h> // for _getch() and _kbhit()
 #include <string>
 #include <cstdlib> // for clean console cmd
+#include <random> 
+
 
 
 Player::Player() :
@@ -88,6 +90,18 @@ void Player::Story()
 	std::cout << "\n";
 }
 
+bool Player::IsInputDigit(const std::string str)
+{
+	for (char c : str)
+	{
+		if (!isdigit(c))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void Player::MainDecision()
 {
 	std::cout << "What do you do: \n";
@@ -95,23 +109,37 @@ void Player::MainDecision()
 	std::cout << "2 - Rest " << std::endl;
 	std::cout << "3 - Search " << std::endl;
 	std::cout << "4 - Check Inventory " << std::endl;
-	int decision;
+	std::string decision;
 	std::cin >> decision;
-	switch (decision)
-	{
-	case 1:
-		Move();
-		break;
-	case 2:
-		Rest();
-		break;
-	case 3:
-		SpawnItem();
-		break;
-	case 4:
 
-		break;
+	if(IsInputDigit(decision))
+	{
+		int number = int(std::stod(decision));
+		switch (number)
+		{
+		case 1:
+			Move();
+			break;
+		case 2:
+			Rest();
+			break;
+		case 3:
+			Search();
+			break;
+		case 4:
+			break;
+		default:
+			CleanConsole();
+			std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
+			break;
+		}
 	}
+	else
+	{
+		CleanConsole();
+		std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
+	}
+
 }
 
 void Player::ItemAction()
@@ -120,16 +148,33 @@ void Player::ItemAction()
 	std::cout << "1 - Add item to Inventory " << std::endl;
 	std::cout << "2 - Do nothing " << std::endl;
 
-	int action;
+	std::string action;
 	std::cin >> action;
-	switch (action)
+
+	if(IsInputDigit(action))
 	{
-	case 1:
-		AddItem(std::move(m_spawnedItem));
-		break;
-	case 2:
-		break;
+		int number = int(std::stod(action));
+		switch (number)
+		{
+		case 1:
+			AddItem(std::move(m_spawnedItem));
+			break;
+		case 2:
+			CleanConsole();
+			break;
+		default:
+			CleanConsole();
+			std::cout << "Please Type 1 or 2 for your action ! " << std::endl;
+			ItemAction();
+		}
 	}
+	else
+	{
+		CleanConsole();
+		std::cout << "Please Type 1 or 2 for your action ! " << std::endl;
+		ItemAction();
+	}
+
 }
 
 void Player::Move()
@@ -173,6 +218,22 @@ void Player::Rest()
 	}
 }
 
+void Player::Search()
+{
+	CleanConsole();
+	const int randNumber = MakeRandomNumberInRange(1, 3);
+	if (randNumber == 1)
+	{
+		SpawnItem();
+	}
+	else
+	{
+		CleanConsole();
+		std::cout << "No special findings were discovered! " << std::endl;
+	}
+	m_playerStats.hungry -= 2;
+}
+
 bool Player::CanRest()
 {
 	if(m_restCounter <= 6)
@@ -206,4 +267,12 @@ void Player::AddItem(std::unique_ptr<Item> newItem)
 		m_inventory.push_back(std::move(newItem));
 		m_spawnedItem = nullptr;
 	}
+}
+
+int Player::MakeRandomNumberInRange(int min, int max)
+{
+	std::mt19937 gen(std::random_device{}());
+	std::uniform_int_distribution<> distribution(min, max);// make a distribution
+
+	return distribution(gen);
 }

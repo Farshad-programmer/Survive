@@ -41,13 +41,16 @@ public:
 	void InitializePlayerInformation();
 	void ShowPlayerStats();
 	void Story();
+	bool IsInputDigit(const std::string str);
 	void MainDecision();
 	void ItemAction();
 	void Move();
 	void Rest();
+	void Search();
 	bool CanRest();
 	void CleanConsole();
 	void SpawnItem();
 	void AddItem(std::unique_ptr<Item> newItem);
+	int MakeRandomNumberInRange(int min, int max);
 };
 
