@@ -19,6 +19,8 @@ private:
 
 	void BeginPlay();
 
+	bool m_bQuit{ false };
+
 	std::vector<std::unique_ptr<Item>> m_inventory;
 	std::unique_ptr<Item> m_spawnedItem;
 	
@@ -42,6 +44,7 @@ public:
 	void ShowPlayerStats();
 	void Story();
 	bool IsInputDigit(const std::string str);
+	void QuitGame();
 	void MainDecision();
 	void ItemAction();
 	void Move();
@@ -52,5 +55,9 @@ public:
 	void SpawnItem();
 	void AddItem(std::unique_ptr<Item> newItem);
 	int MakeRandomNumberInRange(int min, int max);
+
+
+	//Getter and Setter
+	bool GetIsQuit()const { return m_bQuit; }
 };
 

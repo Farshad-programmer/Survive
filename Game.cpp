@@ -15,9 +15,13 @@ void Game::BeginPlay()
 
 void Game::Tick()
 {
-	while (m_bUpdate)
+	if(m_player)
 	{
-		m_player->ShowPlayerStats();
-		m_player->Tick();
+		while (m_bUpdate && !m_player->GetIsQuit())
+		{
+			m_player->ShowPlayerStats();
+			m_player->Tick();
+		}
 	}
+	
 }

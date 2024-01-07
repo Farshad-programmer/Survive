@@ -102,6 +102,14 @@ bool Player::IsInputDigit(const std::string str)
 	return true;
 }
 
+void Player::QuitGame()
+{
+	//exit(0); // not safe
+	CleanConsole();
+	std::cout << "****************** END GAME ******************* " << std::endl;
+	m_bQuit = true;
+}
+
 void Player::MainDecision()
 {
 	std::cout << "What do you do: \n";
@@ -109,13 +117,13 @@ void Player::MainDecision()
 	std::cout << "2 - Rest " << std::endl;
 	std::cout << "3 - Search " << std::endl;
 	std::cout << "4 - Check Inventory " << std::endl;
+	std::cout << "5 - Quit " << std::endl;
 	std::string decision;
 	std::cin >> decision;
 
 	if(IsInputDigit(decision))
 	{
-		int number = int(std::stod(decision));
-		switch (number)
+		switch (int number = int(std::stod(decision)))
 		{
 		case 1:
 			Move();
@@ -127,6 +135,9 @@ void Player::MainDecision()
 			Search();
 			break;
 		case 4:
+			break;
+		case 5:
+			QuitGame();
 			break;
 		default:
 			CleanConsole();
@@ -153,8 +164,7 @@ void Player::ItemAction()
 
 	if(IsInputDigit(action))
 	{
-		int number = int(std::stod(action));
-		switch (number)
+		switch (int number = static_cast<int>(std::stod(action)))
 		{
 		case 1:
 			AddItem(std::move(m_spawnedItem));
