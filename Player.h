@@ -1,6 +1,7 @@
 #pragma once
-#include <string>
 #include <array>
+#include <vector>
+#include "Item.h"
 
 struct player_stats
 {
@@ -18,6 +19,9 @@ private:
 
 	void BeginPlay();
 
+	std::vector<std::unique_ptr<Item>> m_inventory;
+	std::unique_ptr<Item> m_spawnedItem;
+	
 	std::string m_playerName;
 	std::string m_playerSex;
 	player_stats m_playerStats;
@@ -38,9 +42,12 @@ public:
 	void ShowPlayerStats();
 	void Story();
 	void MainDecision();
+	void ItemAction();
 	void Move();
 	void Rest();
 	bool CanRest();
 	void CleanConsole();
+	void SpawnItem();
+	void AddItem(std::unique_ptr<Item> newItem);
 };
 
