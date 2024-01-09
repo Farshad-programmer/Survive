@@ -4,8 +4,7 @@
 #include <string>
 #include <cstdlib> // for clean console cmd
 #include <random> 
-
-
+#include "Color.h"
 
 
 Player::Player() :
@@ -59,7 +58,7 @@ void Player::InitializePlayerInformation()
 void Player::ShowPlayerStats()
 {
 	std::cout << "------------------------" << std::endl;
-	std::cout << m_playerName << std::endl;
+	std::cout << YELLOW_TEXT << m_playerName << RESET_COLOR << std::endl;
 	std::cout << "------------------------" << std::endl;
 	std::cout << "Level: " << m_playerStats.level << std::endl;
 	std::cout << "Health: " << m_playerStats.health << " / " << m_playerStats.max_health << std::endl;
@@ -142,14 +141,14 @@ void Player::MainDecision()
 			break;
 		default:
 			CleanConsole();
-			std::cout << "Please Type 1, 2, 3 or 5 for your Decision ! " << std::endl;
+			std::cout << "Please Type 1, 2, 3, 4 or 5 for your Decision ! " << std::endl;
 			break;
 		}
 	}
 	else
 	{
 		CleanConsole();
-		std::cout << "Please Type 1, 2, 3 or 5 for your Decision ! " << std::endl;
+		std::cout << "Please Type 1, 2, 3, 4 or 5 for your Decision ! " << std::endl;
 	}
 
 }
@@ -391,6 +390,7 @@ void Player::CheckInventory()
 		std::cout << " Your inventory is empty" << std::endl;
 		if(m_bIsNPCInteract)
 		{
+			// todo : need a separate class for NPCs later
 			NPCAction();
 		}
 	}
@@ -436,8 +436,8 @@ void Player::NPCAction()
 {
 	m_bIsNPCInteract = true;
 	std::cout << "What do you do? " << std::endl;
-	std::cout << "1 - Check Your Inventory for Food " << std::endl;
-	std::cout << "2 - Do nothing " << std::endl;
+	std::cout << GREEN_TEXT << "1 - Check Your Inventory for Food " << RESET_COLOR << std::endl;
+	std::cout << RED_TEXT << "2 - Do nothing " << RESET_COLOR << std::endl;
 
 	std::string action;
 	std::cin >> action;
@@ -450,6 +450,7 @@ void Player::NPCAction()
 			CheckInventory();
 			break;
 		case 2:
+			m_bIsNPCInteract = false;
 			CleanConsole("You left her unattended!");
 			break;
 		default:
