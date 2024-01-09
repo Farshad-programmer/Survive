@@ -12,7 +12,9 @@ private:
 	EItemType m_itemType;
 	int m_itemQuantity;
 	bool m_bIsStackable;
+	int m_hungerIncrease;
 	void Eat(Player* player);
+	int MakeRandomNumberInRange(int min, int max);
 
 public:
 

@@ -7,6 +7,7 @@
 
 
 
+
 Player::Player() :
 	m_playerName("Player"), m_playerSex("Male"), m_spawnedItem(nullptr)
 {
@@ -67,13 +68,13 @@ void Player::ShowPlayerStats()
 }
 
 
-void Player::Story()
+void Player::Story(std::array<char, StorySize> story)
 {
 	std::cout << "\nPress Enter to skip...\n";
 
 	long long type_writer_speed = 100LL;
 
-	for (const auto element : m_story)
+	for (const auto element : story)
 	{
 		if (_kbhit()) {
 			if (_getch() == '\r')
@@ -200,9 +201,21 @@ void Player::Move()
 	}
 	else
 	{
-		size_t kilometer = 2;
-		std::cout << "You walked for about " << kilometer << " kilometers" << std::endl;
-		m_playerStats.hungry -= 5;
+		const int randNumber = MakeRandomNumberInRange(1, 6);
+		if(randNumber == 6 && m_bStory2Available)
+		{
+			m_bStory2Available = false;
+			Story(m_story2);
+			m_npc_name = "stranger";
+			NPCAction();
+		}
+		else
+		{
+			size_t kilometer = 2;
+			std::cout << "You walked for about " << kilometer << " kilometers" << std::endl;
+			m_playerStats.hungry -= 5;
+		}
+	
 	}
 }
 
@@ -267,7 +280,29 @@ void Player::CleanConsole(std::string message)
 
 void Player::SpawnItem()
 {
-	m_spawnedItem = std::make_unique<Item>("apple", EItemType::food);
+	switch (const int randNum = MakeRandomNumberInRange(1, 5))
+	{
+	case 1:
+		m_spawnedItem = std::make_unique<Item>("apple", EItemType::food);
+		break;
+	case 2:
+		m_spawnedItem = std::make_unique<Item>("banana", EItemType::food);
+		break;
+	case 3:
+		m_spawnedItem = std::make_unique<Item>("corn", EItemType::food);
+		break;
+	case 4:
+		m_spawnedItem = std::make_unique<Item>("soup", EItemType::food,1,false);
+		break;
+	case 5:
+		m_spawnedItem = std::make_unique<Item>("meat", EItemType::food);
+		break;
+	default:
+		m_spawnedItem = std::make_unique<Item>("apple", EItemType::food);
+		break;
+	}
+	
+
 	std::cout << " You found an " << m_spawnedItem->GetItemName() << std::endl;
 	ItemAction();
 }
@@ -339,13 +374,25 @@ void Player::CheckInventory()
 	std::cout << " You have opened your inventory ..." << std::endl;
 	for (const auto& item : m_inventoryItems)
 	{
-		std::cout << index + 1 << "-" << item->GetItemName() << "(" << item->GetItemQuantity() << ")" << std::endl;
+		if(item->GetItemQuantity() > 1)
+		{
+			std::cout << index + 1 << "-" << item->GetItemName() << "(" << item->GetItemQuantity() << ")" << std::endl;
+		}
+		else
+		{
+			std::cout << index + 1 << "-" << item->GetItemName() <<  std::endl;
+		}
+		
 		index++;
 	}
 	m_inventorySize = index;
 	if (m_inventorySize < 1)
 	{
 		std::cout << " Your inventory is empty" << std::endl;
+		if(m_bIsNPCInteract)
+		{
+			NPCAction();
+		}
 	}
 	else
 	{
@@ -383,6 +430,34 @@ void Player::InventoryAction()
 		CheckInventory();
 	}
 
+}
+
+void Player::NPCAction()
+{
+	m_bIsNPCInteract = true;
+	std::cout << "What do you do? " << std::endl;
+	std::cout << "1 - Check Your Inventory for Food " << std::endl;
+	std::cout << "2 - Do nothing " << std::endl;
+
+	std::string action;
+	std::cin >> action;
+
+	if (IsInputDigit(action))
+	{
+		switch (int number = static_cast<int>(std::stod(action)))
+		{
+		case 1:
+			CheckInventory();
+			break;
+		case 2:
+			CleanConsole("You left her unattended!");
+			break;
+		default:
+			CleanConsole();
+			std::cout << "Please Type 1 or 2 for your action ! " << std::endl;
+			ItemAction();
+		}
+	}
 }
 
 int Player::MakeRandomNumberInRange(int min, int max)
