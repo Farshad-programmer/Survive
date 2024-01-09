@@ -274,8 +274,31 @@ void Player::SpawnItem()
 
 void Player::AddItem(std::unique_ptr<Item> newItem)
 {
+	if (newItem == nullptr) return;
+
 	CleanConsole();
-	if(newItem != nullptr)
+	bool itemFound = false;
+	if(newItem->IsItemStackable())
+	{
+		for (size_t i = 0 ; i < m_inventoryItems.size() ; i++)
+		{
+			if (newItem->GetItemName() == m_inventoryItems[i]->GetItemName())
+			{
+				std::cout << newItem->GetItemName() << " added to inventory." << std::endl;
+				m_inventoryItems[i]->IncreaseQuantity();
+				m_spawnedItem = nullptr;
+				itemFound = true;
+				break;
+			}
+		}
+		if(!itemFound)
+		{
+			std::cout << newItem->GetItemName() << " added to inventory." << std::endl;
+			m_inventoryItems.push_back(std::move(newItem));
+			m_spawnedItem = nullptr;
+		}
+	}
+	else
 	{
 		std::cout << newItem->GetItemName() << " added to inventory." << std::endl;
 		m_inventoryItems.push_back(std::move(newItem));

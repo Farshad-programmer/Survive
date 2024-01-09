@@ -44,7 +44,7 @@ void Item::ItemAction(Player* player)
 
 		if (IsInputDigit(action))
 		{
-			switch (int number = static_cast<int>(std::stod(action)))
+			switch (const int number = static_cast<int>(std::stod(action)))
 			{
 			case 1:
 				player->CleanConsole("You used an item!");
@@ -70,6 +70,11 @@ void Item::ItemAction(Player* player)
 		}
 	}
 
+}
+
+void Item::IncreaseQuantity()
+{
+	m_itemQuantity++;
 }
 
 void Item::Eat(Player* player)

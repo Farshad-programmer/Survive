@@ -22,10 +22,12 @@ public:
 	void BeginPlay();
 	bool IsInputDigit(const std::string str);
 	void ItemAction(Player* player);
+	void IncreaseQuantity();
 
 	//Getter and Setter
 	std::string GetItemName()const { return m_name; }
 	int GetItemQuantity()const { return m_itemQuantity; }
+	bool IsItemStackable()const { return m_bIsStackable; }
 	
 
 };
