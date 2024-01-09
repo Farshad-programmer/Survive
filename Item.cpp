@@ -52,7 +52,7 @@ void Item::ItemAction(Player* player)
 				break;
 			case 2:
 				player->CleanConsole("You removed an item from your inventory!");
-				player->RemoveItem(m_name);
+				player->RemoveItem(*this);
 				break;
 			case 3:
 				player->CleanConsole();
@@ -77,10 +77,15 @@ void Item::IncreaseQuantity()
 	m_itemQuantity++;
 }
 
+void Item::DecreaseQuantity()
+{
+	m_itemQuantity--;
+}
+
 void Item::Eat(Player* player)
 {
 	if(player == nullptr) return;
 
 	player->UpdatePlayerStats("hungry", 10);
-	player->RemoveItem(m_name);
+	player->RemoveItem(*this);
 }

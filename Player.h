@@ -57,7 +57,7 @@ public:
 	void CleanConsole(std::string message = "none");
 	void SpawnItem();
 	void AddItem(std::unique_ptr<Item> newItem);
-	void RemoveItem(const std::string itemName);
+	void RemoveItem(Item& newItem);
 	void CheckInventory();
 	void InventoryAction();
 	int MakeRandomNumberInRange(int min, int max);

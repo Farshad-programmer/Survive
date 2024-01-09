@@ -23,7 +23,7 @@ public:
 	bool IsInputDigit(const std::string str);
 	void ItemAction(Player* player);
 	void IncreaseQuantity();
-
+	void DecreaseQuantity();
 	//Getter and Setter
 	std::string GetItemName()const { return m_name; }
 	int GetItemQuantity()const { return m_itemQuantity; }

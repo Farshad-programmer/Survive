@@ -8,7 +8,7 @@
 
 
 Player::Player() :
-	m_playerName("Player"), m_playerSex("Male"),m_spawnedItem(nullptr)
+	m_playerName("Player"), m_playerSex("Male"), m_spawnedItem(nullptr)
 {
 
 }
@@ -28,31 +28,31 @@ void Player::InitializePlayerInformation()
 	std::cout << "Set Your Name: ";
 	std::cin >> m_playerName;
 	std::cout << "\n";
-    bool gender_Correct = false;
+	bool gender_Correct = false;
 
-    while(!gender_Correct) {
-        std::cout << "Set Your Sex: " << std::endl;
-        std::cout << "1 - Male " << std::endl;
-        std::cout << "2 - Female " << std::endl;
+	while (!gender_Correct) {
+		std::cout << "Set Your Sex: " << std::endl;
+		std::cout << "1 - Male " << std::endl;
+		std::cout << "2 - Female " << std::endl;
 		std::string gender;
-        std::cin >> gender;
+		std::cin >> gender;
 
-        if (gender == "1")
-        {
-            m_playerSex = "Male";
-            gender_Correct = true;
-        }
-        else if (gender == "2")
-        {
-            m_playerSex = "Female";
-            gender_Correct = true;
-        }
-        else
-        {
+		if (gender == "1")
+		{
+			m_playerSex = "Male";
+			gender_Correct = true;
+		}
+		else if (gender == "2")
+		{
+			m_playerSex = "Female";
+			gender_Correct = true;
+		}
+		else
+		{
 			system("cls");
 			std::cout << "Please Type 1 or 2 for your Sex ! " << std::endl;
-        }
-    }
+		}
+	}
 }
 
 void Player::ShowPlayerStats()
@@ -60,8 +60,8 @@ void Player::ShowPlayerStats()
 	std::cout << "------------------------" << std::endl;
 	std::cout << m_playerName << std::endl;
 	std::cout << "------------------------" << std::endl;
-	std::cout << "Level: " << m_playerStats.level<< std::endl;
-	std::cout << "Health: " << m_playerStats.health << " / "<< m_playerStats.max_health << std::endl;
+	std::cout << "Level: " << m_playerStats.level << std::endl;
+	std::cout << "Health: " << m_playerStats.health << " / " << m_playerStats.max_health << std::endl;
 	std::cout << "Hungry: " << m_playerStats.hungry << " / " << m_playerStats.max_hungry << std::endl;
 	std::cout << "------------------------" << std::endl;
 }
@@ -76,7 +76,7 @@ void Player::Story()
 	for (const auto element : m_story)
 	{
 		if (_kbhit()) {
-			if (_getch() == '\r') 
+			if (_getch() == '\r')
 			{
 				type_writer_speed = static_cast<long long>(0.1);
 			}
@@ -120,7 +120,7 @@ void Player::MainDecision()
 	std::string decision;
 	std::cin >> decision;
 
-	if(IsInputDigit(decision))
+	if (IsInputDigit(decision))
 	{
 		switch (int number = int(std::stod(decision)))
 		{
@@ -162,7 +162,7 @@ void Player::ItemAction()
 	std::string action;
 	std::cin >> action;
 
-	if(IsInputDigit(action))
+	if (IsInputDigit(action))
 	{
 		switch (int number = static_cast<int>(std::stod(action)))
 		{
@@ -190,11 +190,11 @@ void Player::ItemAction()
 void Player::Move()
 {
 	CleanConsole();
-	if(m_playerStats.hungry < 15)
+	if (m_playerStats.hungry < 15)
 	{
 		std::cout << "I am so hungry , I can not walk more." << std::endl;
 	}
-	else if(m_playerStats.health < 15)
+	else if (m_playerStats.health < 15)
 	{
 		std::cout << "I am sick , I can not walk more." << std::endl;
 	}
@@ -209,8 +209,8 @@ void Player::Move()
 void Player::Rest()
 {
 	CleanConsole();
-	
-	if(CanRest())
+
+	if (CanRest())
 	{
 		m_restCounter += 3;
 		std::cout << "You rested for a while." << std::endl;
@@ -246,7 +246,7 @@ void Player::Search()
 
 bool Player::CanRest()
 {
-	if(m_restCounter <= 6)
+	if (m_restCounter <= 6)
 	{
 		return true;
 	}
@@ -259,7 +259,7 @@ bool Player::CanRest()
 void Player::CleanConsole(std::string message)
 {
 	system("cls");
-	if(message != "none")
+	if (message != "none")
 	{
 		std::cout << message << std::endl;
 	}
@@ -267,7 +267,7 @@ void Player::CleanConsole(std::string message)
 
 void Player::SpawnItem()
 {
-	m_spawnedItem = std::make_unique<Item>("apple",EItemType::food);
+	m_spawnedItem = std::make_unique<Item>("apple", EItemType::food);
 	std::cout << " You found an " << m_spawnedItem->GetItemName() << std::endl;
 	ItemAction();
 }
@@ -278,9 +278,9 @@ void Player::AddItem(std::unique_ptr<Item> newItem)
 
 	CleanConsole();
 	bool itemFound = false;
-	if(newItem->IsItemStackable())
+	if (newItem->IsItemStackable())
 	{
-		for (size_t i = 0 ; i < m_inventoryItems.size() ; i++)
+		for (size_t i = 0; i < m_inventoryItems.size(); i++)
 		{
 			if (newItem->GetItemName() == m_inventoryItems[i]->GetItemName())
 			{
@@ -291,7 +291,7 @@ void Player::AddItem(std::unique_ptr<Item> newItem)
 				break;
 			}
 		}
-		if(!itemFound)
+		if (!itemFound)
 		{
 			std::cout << newItem->GetItemName() << " added to inventory." << std::endl;
 			m_inventoryItems.push_back(std::move(newItem));
@@ -306,18 +306,25 @@ void Player::AddItem(std::unique_ptr<Item> newItem)
 	}
 }
 
-void Player::RemoveItem(const std::string itemName)
+void Player::RemoveItem(Item& newItem)
 {
-	if(!m_inventoryItems.empty())
+	if (!m_inventoryItems.empty())
 	{
-	for (int i = 0; i < m_inventoryItems.size(); ++i)
-	{
-		if(m_inventoryItems[i]->GetItemName() == itemName)
+		if(newItem.IsItemStackable() && newItem.GetItemQuantity() > 1)
 		{
-			m_inventoryItems.erase(m_inventoryItems.begin() + i);
-			break;
+			newItem.DecreaseQuantity();
 		}
-	}
+		else
+		{
+			for (int i = 0; i < m_inventoryItems.size(); ++i)
+			{
+				if (m_inventoryItems[i]->GetItemName() == newItem.GetItemName())
+				{
+					m_inventoryItems.erase(m_inventoryItems.begin() + i);
+					break;
+				}
+			}
+		}
 	}
 	else
 	{
@@ -329,14 +336,14 @@ void Player::CheckInventory()
 {
 	CleanConsole();
 	int index = 0;
-	std::cout <<" You have opened your inventory ..." << std::endl;
-	for(const auto& item : m_inventoryItems)
+	std::cout << " You have opened your inventory ..." << std::endl;
+	for (const auto& item : m_inventoryItems)
 	{
-		std::cout << index + 1 << "-" << item->GetItemName() << "(" << item->GetItemQuantity()<<")"<< std::endl;
+		std::cout << index + 1 << "-" << item->GetItemName() << "(" << item->GetItemQuantity() << ")" << std::endl;
 		index++;
 	}
 	m_inventorySize = index;
-	if(m_inventorySize < 1)
+	if (m_inventorySize < 1)
 	{
 		std::cout << " Your inventory is empty" << std::endl;
 	}
@@ -353,13 +360,13 @@ void Player::InventoryAction()
 	std::cin >> action;
 	int number = static_cast<int>(std::stod(action));
 
-	if(number != 0)
+	if (number != 0)
 	{
 		if (number <= m_inventorySize)
 		{
 			number--;
 			const std::unique_ptr<Item>& selectedItem = m_inventoryItems[number];
-			if(selectedItem)
+			if (selectedItem)
 			{
 				selectedItem->ItemAction(this);
 			}
@@ -375,7 +382,7 @@ void Player::InventoryAction()
 		std::cout << " Invalid Input!" << std::endl;
 		CheckInventory();
 	}
-	
+
 }
 
 int Player::MakeRandomNumberInRange(int min, int max)
@@ -388,16 +395,16 @@ int Player::MakeRandomNumberInRange(int min, int max)
 
 void Player::UpdatePlayerStats(std::string propertyName, int value, bool add)
 {
-	if(propertyName == "health")
+	if (propertyName == "health")
 	{
-		if(add)
+		if (add)
 		{
 			m_playerStats.health += value;
-			if(m_playerStats.health >= m_playerStats.max_health)
+			if (m_playerStats.health >= m_playerStats.max_health)
 			{
 				m_playerStats.health = m_playerStats.max_health;
 			}
-			
+
 		}
 		else
 		{
@@ -407,9 +414,9 @@ void Player::UpdatePlayerStats(std::string propertyName, int value, bool add)
 				m_playerStats.health = 0;
 			}
 		}
-		
+
 	}
-	else if(propertyName == "hungry")
+	else if (propertyName == "hungry")
 	{
 		if (add)
 		{
