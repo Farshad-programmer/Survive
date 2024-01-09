@@ -57,14 +57,12 @@ void Player::InitializePlayerInformation()
 
 void Player::ShowPlayerStats()
 {
-	std::cout << "\n";
-	std::cout << "\n";
-
+	std::cout << "------------------------" << std::endl;
 	std::cout << m_playerName << std::endl;
 	std::cout << "------------------------" << std::endl;
 	std::cout << "Level: " << m_playerStats.level<< std::endl;
-	std::cout << "Health: " << m_playerStats.health << std::endl;
-	std::cout << "Hungry: " << m_playerStats.hungry << std::endl;
+	std::cout << "Health: " << m_playerStats.health << " / "<< m_playerStats.max_health << std::endl;
+	std::cout << "Hungry: " << m_playerStats.hungry << " / " << m_playerStats.max_hungry << std::endl;
 	std::cout << "------------------------" << std::endl;
 }
 
@@ -75,7 +73,7 @@ void Player::Story()
 
 	long long type_writer_speed = 100LL;
 
-	for (auto element : m_story)
+	for (const auto element : m_story)
 	{
 		if (_kbhit()) {
 			if (_getch() == '\r') 
@@ -87,6 +85,7 @@ void Player::Story()
 		std::this_thread::sleep_for(std::chrono::milliseconds(type_writer_speed));
 	}
 
+	std::cout << "\n";
 	std::cout << "\n";
 }
 
@@ -135,20 +134,21 @@ void Player::MainDecision()
 			Search();
 			break;
 		case 4:
+			CheckInventory();
 			break;
 		case 5:
 			QuitGame();
 			break;
 		default:
 			CleanConsole();
-			std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
+			std::cout << "Please Type 1, 2, 3 or 5 for your Decision ! " << std::endl;
 			break;
 		}
 	}
 	else
 	{
 		CleanConsole();
-		std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
+		std::cout << "Please Type 1, 2, 3 or 5 for your Decision ! " << std::endl;
 	}
 
 }
@@ -256,9 +256,13 @@ bool Player::CanRest()
 	}
 }
 
-void Player::CleanConsole()
+void Player::CleanConsole(std::string message)
 {
 	system("cls");
+	if(message != "none")
+	{
+		std::cout << message << std::endl;
+	}
 }
 
 void Player::SpawnItem()
@@ -274,9 +278,81 @@ void Player::AddItem(std::unique_ptr<Item> newItem)
 	if(newItem != nullptr)
 	{
 		std::cout << newItem->GetItemName() << " added to inventory." << std::endl;
-		m_inventory.push_back(std::move(newItem));
+		m_inventoryItems.push_back(std::move(newItem));
 		m_spawnedItem = nullptr;
 	}
+}
+
+void Player::RemoveItem(const std::string itemName)
+{
+	if(!m_inventoryItems.empty())
+	{
+	for (int i = 0; i < m_inventoryItems.size(); ++i)
+	{
+		if(m_inventoryItems[i]->GetItemName() == itemName)
+		{
+			m_inventoryItems.erase(m_inventoryItems.begin() + i);
+			break;
+		}
+	}
+	}
+	else
+	{
+		std::cout << "Inventory is already empty." << std::endl;
+	}
+}
+
+void Player::CheckInventory()
+{
+	CleanConsole();
+	int index = 0;
+	std::cout <<" You have opened your inventory ..." << std::endl;
+	for(const auto& item : m_inventoryItems)
+	{
+		std::cout << index + 1 << "-" << item->GetItemName() << "(" << item->GetItemQuantity()<<")"<< std::endl;
+		index++;
+	}
+	m_inventorySize = index;
+	if(m_inventorySize < 1)
+	{
+		std::cout << " Your inventory is empty" << std::endl;
+	}
+	else
+	{
+		std::cout << " You can select your items ..." << std::endl;
+		InventoryAction();
+	}
+}
+
+void Player::InventoryAction()
+{
+	std::string action;
+	std::cin >> action;
+	int number = static_cast<int>(std::stod(action));
+
+	if(number != 0)
+	{
+		if (number <= m_inventorySize)
+		{
+			number--;
+			const std::unique_ptr<Item>& selectedItem = m_inventoryItems[number];
+			if(selectedItem)
+			{
+				selectedItem->ItemAction(this);
+			}
+		}
+		else
+		{
+			std::cout << " Invalid Input!" << std::endl;
+			CheckInventory();
+		}
+	}
+	else
+	{
+		std::cout << " Invalid Input!" << std::endl;
+		CheckInventory();
+	}
+	
 }
 
 int Player::MakeRandomNumberInRange(int min, int max)
@@ -285,4 +361,48 @@ int Player::MakeRandomNumberInRange(int min, int max)
 	std::uniform_int_distribution<> distribution(min, max);// make a distribution
 
 	return distribution(gen);
+}
+
+void Player::UpdatePlayerStats(std::string propertyName, int value, bool add)
+{
+	if(propertyName == "health")
+	{
+		if(add)
+		{
+			m_playerStats.health += value;
+			if(m_playerStats.health >= m_playerStats.max_health)
+			{
+				m_playerStats.health = m_playerStats.max_health;
+			}
+			
+		}
+		else
+		{
+			m_playerStats.health -= value;
+			if (m_playerStats.health < 0)
+			{
+				m_playerStats.health = 0;
+			}
+		}
+		
+	}
+	else if(propertyName == "hungry")
+	{
+		if (add)
+		{
+			m_playerStats.hungry += value;
+			if (m_playerStats.hungry >= m_playerStats.max_hungry)
+			{
+				m_playerStats.hungry = m_playerStats.max_hungry;
+			}
+		}
+		else
+		{
+			m_playerStats.hungry -= value;
+			if (m_playerStats.hungry < 0)
+			{
+				m_playerStats.hungry = 0;
+			}
+		}
+	}
 }

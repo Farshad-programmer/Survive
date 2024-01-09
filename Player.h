@@ -9,7 +9,9 @@ public:
 
 	int level = 1;
 	int health = 50;
+	int max_health = 100;
 	int hungry = 40;
+	int max_hungry = 100;
 };
 
 
@@ -21,7 +23,8 @@ private:
 
 	bool m_bQuit{ false };
 
-	std::vector<std::unique_ptr<Item>> m_inventory;
+	std::vector<std::unique_ptr<Item>> m_inventoryItems;
+	int m_inventorySize{ 0 };
 	std::unique_ptr<Item> m_spawnedItem;
 	
 	std::string m_playerName;
@@ -51,10 +54,14 @@ public:
 	void Rest();
 	void Search();
 	bool CanRest();
-	void CleanConsole();
+	void CleanConsole(std::string message = "none");
 	void SpawnItem();
 	void AddItem(std::unique_ptr<Item> newItem);
+	void RemoveItem(const std::string itemName);
+	void CheckInventory();
+	void InventoryAction();
 	int MakeRandomNumberInRange(int min, int max);
+	void UpdatePlayerStats(std::string propertyName,int value,bool add = true);
 
 
 	//Getter and Setter
