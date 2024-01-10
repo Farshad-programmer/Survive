@@ -5,7 +5,7 @@
 #include <cstdlib> // for clean console cmd
 #include <random> 
 #include "Color.h"
-
+#include "MyLibrary.h"
 
 Player::Player() :
 	m_playerName("Player"), m_playerSex("Male"), m_spawnedItem(nullptr)
@@ -89,18 +89,6 @@ void Player::Story(std::array<char, StorySize> story)
 	std::cout << "\n";
 }
 
-bool Player::IsInputDigit(const std::string str)
-{
-	for (char c : str)
-	{
-		if (!isdigit(c))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
 void Player::QuitGame()
 {
 	//exit(0); // not safe
@@ -116,7 +104,7 @@ void Player::MainDecision()
 	std::cout << "2 - Rest " << std::endl;
 	std::cout << "3 - Search " << std::endl;
 	std::cout << "4 - Check Inventory " << std::endl;
-	std::cout << "5 - Quit " << std::endl;
+	std::cout << "5 - Menu " << std::endl;
 	std::string decision;
 	std::cin >> decision;
 
@@ -137,7 +125,7 @@ void Player::MainDecision()
 			CheckInventory();
 			break;
 		case 5:
-			QuitGame();
+			PauseMenu();
 			break;
 		default:
 			CleanConsole();
@@ -265,15 +253,6 @@ bool Player::CanRest()
 	else
 	{
 		return false;
-	}
-}
-
-void Player::CleanConsole(std::string message)
-{
-	system("cls");
-	if (message != "none")
-	{
-		std::cout << message << std::endl;
 	}
 }
 
@@ -510,5 +489,114 @@ void Player::UpdatePlayerStats(std::string propertyName, int value, bool add)
 				m_playerStats.hungry = 0;
 			}
 		}
+	}
+}
+
+void Player::MainMenu()
+{
+	SetConsoleFont(20);
+	std::cout << RED_TEXT << "SURVIVE" << RESET_COLOR << std::endl;
+	std::cout << "1 - NEW GAME " << std::endl;
+	std::cout << "2 - CONTINUE " << std::endl;
+	std::cout << "3 - QUIT " << std::endl;
+
+	std::string action;
+	std::cin >> action;
+
+	if (IsInputDigit(action))
+	{
+		switch (int number = int(std::stod(action)))
+		{
+		case 1:
+			CleanConsole();
+			InitializePlayerInformation();
+			CleanConsole();
+			break;
+		case 2:
+			break;
+		case 3:
+			QuitGame();
+			break;
+		default:
+			MainMenu();
+			std::cout << "Please Type 1, 2 or 3 ! " << std::endl;
+			break;
+		}
+	}
+	else
+	{
+		MainMenu();
+		std::cout << "Please Type 1, 2 or 3 ! " << std::endl;
+	}
+}
+
+void Player::PauseMenu()
+{
+	CleanConsole("PAUSE GAME !");
+	std::cout << "1 - RESUME " << std::endl;
+	std::cout << "2 - SAVE " << std::endl;
+	std::cout << "3 - QUIT " << std::endl;
+
+	std::string action;
+	std::cin >> action;
+
+	if (IsInputDigit(action))
+	{
+		switch (int number = int(std::stod(action)))
+		{
+		case 1:
+			CleanConsole();
+			break;
+		case 2:
+			break;
+		case 3:
+			CleanConsole();
+			AreYouSure();
+			break;
+		default:
+			PauseMenu();
+			std::cout << "Please Type 1, 2 or 3 ! " << std::endl;
+			break;
+		}
+	}
+	else
+	{
+		PauseMenu();
+		std::cout << "Please Type 1, 2 or 3 ! " << std::endl;
+	}
+}
+
+void Player::AreYouSure()
+{
+	CleanConsole("Are you sure? ");
+	std::cout << "1 - No " << std::endl;
+	std::cout << "2 - Yes " << std::endl;
+
+	std::string action;
+	std::cin >> action;
+
+	if (IsInputDigit(action))
+	{
+		switch (int number = int(std::stod(action)))
+		{
+		case 1:
+			CleanConsole();
+			PauseMenu();
+			break;
+		case 2:
+			CleanConsole();
+			QuitGame();
+			break;
+
+		default:
+			PauseMenu();
+			std::cout << "Please Type 1, 2 ! " << std::endl;
+			break;
+		}
+	}
+	else
+	{
+		PauseMenu();
+		std::cout << "Please Type 1, or 2 ! " << std::endl;
 	}
 }

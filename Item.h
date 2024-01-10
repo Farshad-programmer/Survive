@@ -22,7 +22,6 @@ public:
 	~Item() = default;
 
 	void BeginPlay();
-	bool IsInputDigit(const std::string str);
 	void ItemAction(Player* player);
 	void IncreaseQuantity();
 	void DecreaseQuantity();

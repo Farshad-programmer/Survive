@@ -44,8 +44,6 @@ private:
 	int MakeRandomNumberInRange(int min, int max);
 	void SpawnItem();
 	void ItemAction();
-	bool IsInputDigit(const std::string str);
-	void QuitGame();
 	void CheckInventory();
 	void InventoryAction();
 	void NPCAction();
@@ -54,13 +52,16 @@ public:
 	~Player() = default;
 
 	void Tick();
+	void QuitGame();
 	void InitializePlayerInformation();
 	void ShowPlayerStats();
 	void Story(std::array<char, StorySize> story);
 	void AddItem(std::unique_ptr<Item> newItem);
 	void RemoveItem(Item& newItem);
 	void UpdatePlayerStats(std::string propertyName, int value, bool add = true);
-	void CleanConsole(std::string message = "none");
+	void MainMenu();
+	void PauseMenu();
+	void AreYouSure();
 
 
 	// public variables

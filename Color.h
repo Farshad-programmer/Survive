@@ -16,6 +16,7 @@ inline void SetConsoleFont(int fontSize) {
 
 
 
+
 #define RESET_COLOR "\033[0m"
 
 #define BLACK_TEXT "\033[30m"
