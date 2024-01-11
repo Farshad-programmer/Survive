@@ -54,7 +54,7 @@ public:
 	void Tick();
 	void QuitGame();
 	void InitializePlayerInformation();
-	void ShowPlayerStats();
+	void ShowPlayerStats(bool isFromLoadGame = false);
 	void Story(std::array<char, StorySize> story);
 	void AddItem(std::unique_ptr<Item> newItem);
 	void RemoveItem(Item& newItem);
@@ -62,7 +62,8 @@ public:
 	void MainMenu();
 	void PauseMenu();
 	void AreYouSure();
-
+	void SaveGame(const std::string& filename);
+	void LoadGame(const std::string& filename);
 
 	// public variables
 

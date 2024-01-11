@@ -1,22 +1,5 @@
 #include <Windows.h>
 
-inline void SetConsoleFont(int fontSize) {
-    CONSOLE_FONT_INFOEX fontInfo;
-    fontInfo.cbSize = sizeof(fontInfo);
-    fontInfo.nFont = 0;
-    fontInfo.dwFontSize.X = 0;
-    fontInfo.dwFontSize.Y = fontSize;
-    fontInfo.FontFamily = FF_ROMAN;
-    fontInfo.FontWeight = FW_NORMAL;
-    wcscpy_s(fontInfo.FaceName, L"Consolas");
-
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
-}
-
-
-
-
 #define RESET_COLOR "\033[0m"
 
 #define BLACK_TEXT "\033[30m"
@@ -37,6 +20,23 @@ inline void SetConsoleFont(int fontSize) {
 #define MAGENTA_BACKGROUND "\033[45m"
 #define CYAN_BACKGROUND "\033[46m"
 #define WHITE_BACKGROUND "\033[47m"
+
+
+
+inline void SetConsoleFont(int fontSize) {
+    CONSOLE_FONT_INFOEX fontInfo;
+    fontInfo.cbSize = sizeof(fontInfo);
+    fontInfo.nFont = 0;
+    fontInfo.dwFontSize.X = 0;
+    fontInfo.dwFontSize.Y = fontSize;
+    fontInfo.FontFamily = FF_ROMAN;
+    fontInfo.FontWeight = FW_NORMAL;
+    wcscpy_s(fontInfo.FaceName, L"Consolas");
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
+}
+
 
 // 2 samples
 //std::cout << RED_TEXT << "his is a red color text." << RESET_COLOR << std::endl;

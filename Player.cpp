@@ -2,8 +2,8 @@
 #include <chrono> // for miliseconds
 #include <conio.h> // for _getch() and _kbhit()
 #include <string>
-#include <cstdlib> // for clean console cmd
 #include <random> 
+#include <fstream>
 #include "Color.h"
 #include "MyLibrary.h"
 
@@ -25,45 +25,65 @@ void Player::Tick()
 
 void Player::InitializePlayerInformation()
 {
-	std::cout << "Set Your Name: ";
-	std::cin >> m_playerName;
-	std::cout << "\n";
-	bool gender_Correct = false;
+	std::cout << "What is your name? ";
+	std::string yourName;
+	std::cin >> yourName;
+	if (!IsNonNumeric(yourName))
+	{
+		CleanConsole("Please Type a correct name !");
+		InitializePlayerInformation();
+	}
+	else
+	{
+		m_playerName = yourName;
+		std::cout << "\n";
+		bool gender_Correct = false;
 
-	while (!gender_Correct) {
-		std::cout << "Set Your Sex: " << std::endl;
-		std::cout << "1 - Male " << std::endl;
-		std::cout << "2 - Female " << std::endl;
-		std::string gender;
-		std::cin >> gender;
+		while (!gender_Correct)
+		{
+			std::cout << "What is your gender? " << std::endl;
+			std::cout << "1 - Male " << std::endl;
+			std::cout << "2 - Female " << std::endl;
+			std::string gender;
+			std::cin >> gender;
 
-		if (gender == "1")
-		{
-			m_playerSex = "Male";
-			gender_Correct = true;
-		}
-		else if (gender == "2")
-		{
-			m_playerSex = "Female";
-			gender_Correct = true;
-		}
-		else
-		{
-			system("cls");
-			std::cout << "Please Type 1 or 2 for your Sex ! " << std::endl;
+			if (gender == "1")
+			{
+				m_playerSex = "Male";
+				gender_Correct = true;
+			}
+			else if (gender == "2")
+			{
+				m_playerSex = "Female";
+				gender_Correct = true;
+			}
+			else
+			{
+				CleanConsole();
+				std::cout << "Please Type 1 or 2 for your Sex ! " << std::endl;
+			}
 		}
 	}
+
 }
 
-void Player::ShowPlayerStats()
+void Player::ShowPlayerStats(bool isFromLoadGame)
 {
-	std::cout << "------------------------" << std::endl;
-	std::cout << YELLOW_TEXT << m_playerName << RESET_COLOR << std::endl;
-	std::cout << "------------------------" << std::endl;
-	std::cout << "Level: " << m_playerStats.level << std::endl;
-	std::cout << "Health: " << m_playerStats.health << " / " << m_playerStats.max_health << std::endl;
-	std::cout << "Hungry: " << m_playerStats.hungry << " / " << m_playerStats.max_hungry << std::endl;
-	std::cout << "------------------------" << std::endl;
+	if(!isFromLoadGame)
+	{
+		std::cout << "------------------------" << std::endl;
+		std::cout << YELLOW_TEXT << m_playerName << RESET_COLOR << std::endl;
+		std::cout << "------------------------" << std::endl;
+		std::cout << "Level: " << m_playerStats.level << std::endl;
+		std::cout << "Health: " << m_playerStats.health << " / " << m_playerStats.max_health << std::endl;
+		std::cout << "Hungry: " << m_playerStats.hungry << " / " << m_playerStats.max_hungry << std::endl;
+		std::cout << "------------------------" << std::endl;
+	}
+	else
+	{
+		std::cout << "Data loaded from save file!" << std::endl;
+	}
+
 }
 
 
@@ -189,7 +209,7 @@ void Player::Move()
 	else
 	{
 		const int randNumber = MakeRandomNumberInRange(1, 6);
-		if(randNumber == 6 && m_bStory2Available)
+		if (randNumber == 6 && m_bStory2Available)
 		{
 			m_bStory2Available = false;
 			Story(m_story2);
@@ -202,7 +222,7 @@ void Player::Move()
 			std::cout << "You walked for about " << kilometer << " kilometers" << std::endl;
 			m_playerStats.hungry -= 5;
 		}
-	
+
 	}
 }
 
@@ -270,7 +290,7 @@ void Player::SpawnItem()
 		m_spawnedItem = std::make_unique<Item>("corn", EItemType::food);
 		break;
 	case 4:
-		m_spawnedItem = std::make_unique<Item>("soup", EItemType::food,1,false);
+		m_spawnedItem = std::make_unique<Item>("soup", EItemType::food, 1, false);
 		break;
 	case 5:
 		m_spawnedItem = std::make_unique<Item>("meat", EItemType::food);
@@ -279,7 +299,7 @@ void Player::SpawnItem()
 		m_spawnedItem = std::make_unique<Item>("apple", EItemType::food);
 		break;
 	}
-	
+
 
 	std::cout << " You found an " << m_spawnedItem->GetItemName() << std::endl;
 	ItemAction();
@@ -323,7 +343,7 @@ void Player::RemoveItem(Item& newItem)
 {
 	if (!m_inventoryItems.empty())
 	{
-		if(newItem.IsItemStackable() && newItem.GetItemQuantity() > 1)
+		if (newItem.IsItemStackable() && newItem.GetItemQuantity() > 1)
 		{
 			newItem.DecreaseQuantity();
 		}
@@ -352,22 +372,22 @@ void Player::CheckInventory()
 	std::cout << " You have opened your inventory ..." << std::endl;
 	for (const auto& item : m_inventoryItems)
 	{
-		if(item->GetItemQuantity() > 1)
+		if (item->GetItemQuantity() > 1)
 		{
 			std::cout << index + 1 << "-" << item->GetItemName() << "(" << item->GetItemQuantity() << ")" << std::endl;
 		}
 		else
 		{
-			std::cout << index + 1 << "-" << item->GetItemName() <<  std::endl;
+			std::cout << index + 1 << "-" << item->GetItemName() << std::endl;
 		}
-		
+
 		index++;
 	}
 	m_inventorySize = index;
 	if (m_inventorySize < 1)
 	{
 		std::cout << " Your inventory is empty" << std::endl;
-		if(m_bIsNPCInteract)
+		if (m_bIsNPCInteract)
 		{
 			// todo : need a separate class for NPCs later
 			NPCAction();
@@ -495,7 +515,6 @@ void Player::UpdatePlayerStats(std::string propertyName, int value, bool add)
 void Player::MainMenu()
 {
 	SetConsoleFont(20);
-	std::cout << RED_TEXT << "SURVIVE" << RESET_COLOR << std::endl;
 	std::cout << "1 - NEW GAME " << std::endl;
 	std::cout << "2 - CONTINUE " << std::endl;
 	std::cout << "3 - QUIT " << std::endl;
@@ -513,6 +532,7 @@ void Player::MainMenu()
 			CleanConsole();
 			break;
 		case 2:
+			LoadGame("save/base_save.txt");
 			break;
 		case 3:
 			QuitGame();
@@ -548,6 +568,7 @@ void Player::PauseMenu()
 			CleanConsole();
 			break;
 		case 2:
+			SaveGame("save/base_save.txt");
 			break;
 		case 3:
 			CleanConsole();
@@ -598,5 +619,66 @@ void Player::AreYouSure()
 	{
 		PauseMenu();
 		std::cout << "Please Type 1, or 2 ! " << std::endl;
+	}
+}
+
+void Player::SaveGame(const std::string& filename)
+{
+	CleanConsole();
+
+	std::fstream file(filename);
+
+	if (file.is_open())
+	{
+		file << "Player Name: " << m_playerName << std::endl;
+		file << "Level: " << m_playerStats.level << std::endl;
+		file << "Health: " << m_playerStats.health << std::endl;
+		file << "Hungry: " << m_playerStats.hungry << std::endl;
+		file.close();
+		std::cout << CYAN_TEXT << "GAME SAVED !" << RESET_COLOR << std::endl;
+	}
+	else
+	{
+		std::cerr << "Unable to open the file for saving." << std::endl;
+	}
+
+}
+
+void Player::LoadGame(const std::string& filename)
+{
+	std::fstream file(filename);
+	if(file.is_open())
+	{
+		std::string line;
+		while (std::getline(file,line))
+		{
+			size_t delimiterPos = line.find(":");
+			if(delimiterPos != std::string::npos)
+			{
+				std::string key = line.substr(0, delimiterPos);
+				std::string value = line.substr(delimiterPos + 2);
+				if (key == "Health") {
+					m_playerStats.health = std::stoi(value);
+				}
+				else if (key == "Hungry") {
+					m_playerStats.hungry = std::stoi(value);
+				}
+				else if(key == "Level")
+				{
+					m_playerStats.level = std::stoi(value);
+				}
+				else if(key == "Player Name")
+				{
+					m_playerName = value;
+				}
+			}
+		}
+		file.close();
+		CleanConsole("Data loaded successfully.");
+		ShowPlayerStats(true);
+	}
+	else
+	{
+		CleanConsole("Unable to open the file for loading.");
 	}
 }
