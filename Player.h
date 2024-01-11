@@ -62,8 +62,15 @@ public:
 	void MainMenu();
 	void PauseMenu();
 	void AreYouSure();
-	void SaveGame(const std::string& filename);
-	void LoadGame(const std::string& filename);
+	void SaveGame(const std::string& filename, const std::string& itemFilename);
+	void LoadGame(const std::string& filename, const std::string& itemFilename);
+
+	std::unique_ptr<Item> ReadItemFromFile(std::ifstream& ifs)
+	{
+		std::unique_ptr<Item> item = std::make_unique<Item>();
+		ifs >> *item;
+		return item;
+	}
 
 	// public variables
 

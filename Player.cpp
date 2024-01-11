@@ -532,7 +532,7 @@ void Player::MainMenu()
 			CleanConsole();
 			break;
 		case 2:
-			LoadGame("save/base_save.txt");
+			LoadGame("save/base_save.txt", "save/item_save.txt");
 			break;
 		case 3:
 			QuitGame();
@@ -568,7 +568,7 @@ void Player::PauseMenu()
 			CleanConsole();
 			break;
 		case 2:
-			SaveGame("save/base_save.txt");
+			SaveGame("save/base_save.txt", "save/item_save.txt");
 			break;
 		case 3:
 			CleanConsole();
@@ -622,12 +622,24 @@ void Player::AreYouSure()
 	}
 }
 
-void Player::SaveGame(const std::string& filename)
+void Player::SaveGame(const std::string& filename, const std::string& itemFilename)
 {
 	CleanConsole();
 
-	std::fstream file(filename);
+	// to save item class
+	std::ofstream ofs("save/item_save.txt", std::ios::out | std::ios::trunc);
+	if (!ofs.is_open()) {
+		std::cerr << "Error opening file for writing!" << std::endl;
+		return;
+	}
+	for (const auto& itemPtr : m_inventoryItems)
+	{
+		ofs << *itemPtr;
+	}
+	ofs.close();
 
+	// to save player stats
+	std::fstream file(filename);
 	if (file.is_open())
 	{
 		file << "Player Name: " << m_playerName << std::endl;
@@ -641,11 +653,32 @@ void Player::SaveGame(const std::string& filename)
 	{
 		std::cerr << "Unable to open the file for saving." << std::endl;
 	}
-
 }
 
-void Player::LoadGame(const std::string& filename)
+
+
+
+void Player::LoadGame(const std::string& filename, const std::string& itemFilename)
 {
+
+	std::ifstream ifs("save/item_save.txt");
+
+	if (!ifs.is_open()) {
+		std::cerr << "Error opening file for reading!" << std::endl;
+		return;
+	}
+
+	std::unique_ptr<Item> currentItem;
+
+	while (!ifs.eof()) {
+		currentItem = ReadItemFromFile(ifs);
+		if (currentItem != nullptr && currentItem->GetItemName() != "") {
+			std::cout << "Loaded Item: " << currentItem->GetItemName() << std::endl;
+			AddItem(std::move(currentItem));
+			//m_inventoryItems.push_back(std::move(currentItem));
+		}
+	}
+	
 	std::fstream file(filename);
 	if(file.is_open())
 	{
@@ -674,6 +707,7 @@ void Player::LoadGame(const std::string& filename)
 			}
 		}
 		file.close();
+
 		CleanConsole("Data loaded successfully.");
 		ShowPlayerStats(true);
 	}
@@ -682,3 +716,5 @@ void Player::LoadGame(const std::string& filename)
 		CleanConsole("Unable to open the file for loading.");
 	}
 }
+
+
