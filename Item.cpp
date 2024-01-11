@@ -92,12 +92,16 @@ void Item::DecreaseQuantity()
 	m_itemQuantity--;
 }
 
-void Item::Eat(Player* player)
+void Item::Eat(Player* player, bool removeFromInventory)
 {
 	if(player == nullptr) return;
 
 	player->UpdatePlayerStats("hungry", m_hungerIncrease);
-	player->RemoveItem(*this);
+	if(removeFromInventory)
+	{
+		player->RemoveItem(*this);
+	}
+	
 }
 
 int Item::MakeRandomNumberInRange(int min, int max)

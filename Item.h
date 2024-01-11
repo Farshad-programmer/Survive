@@ -18,7 +18,6 @@ private:
 	bool m_bIsStackable;
 	int m_hungerIncrease;
 
-	void Eat(Player* player);
 	int MakeRandomNumberInRange(int min, int max);
 
 public:
@@ -30,6 +29,7 @@ public:
 	void ItemAction(Player* player);
 	void IncreaseQuantity();
 	void DecreaseQuantity();
+	void Eat(Player* player, bool removeFromInventory = true);
 
 
 	friend std::ostream& operator<<(std::ostream& os,const Item& item)
@@ -65,6 +65,7 @@ public:
 	std::string GetItemName()const { return m_name; }
 	int GetItemQuantity()const { return m_itemQuantity; }
 	bool IsItemStackable()const { return m_bIsStackable; }
+	EItemType GetItemType()const { return m_itemType; }
 
 
 

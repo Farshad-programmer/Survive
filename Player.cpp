@@ -81,7 +81,7 @@ void Player::ShowPlayerStats(bool isFromLoadGame)
 	}
 	else
 	{
-		std::cout << "Data loaded from save file!" << std::endl;
+		//Data loaded from save file!
 	}
 
 }
@@ -166,6 +166,10 @@ void Player::ItemAction()
 	std::cout << "What do you do: " << std::endl;
 	std::cout << "1 - Add item to Inventory " << std::endl;
 	std::cout << "2 - Do nothing " << std::endl;
+	if(m_spawnedItem->GetItemType() == EItemType::food)
+	{
+		std::cout << "3 - Eat it " << std::endl;
+	}
 
 	std::string action;
 	std::cin >> action;
@@ -179,6 +183,10 @@ void Player::ItemAction()
 			break;
 		case 2:
 			CleanConsole();
+			break;
+		case 3:
+			CleanConsole("You ate an : " + m_spawnedItem->GetItemName());
+			m_spawnedItem->Eat(this,false);
 			break;
 		default:
 			CleanConsole();
@@ -369,7 +377,7 @@ void Player::CheckInventory()
 {
 	CleanConsole();
 	int index = 0;
-	std::cout << " You have opened your inventory ..." << std::endl;
+	std::cout << " You can select your items ..." << std::endl;
 	for (const auto& item : m_inventoryItems)
 	{
 		if (item->GetItemQuantity() > 1)
@@ -383,6 +391,12 @@ void Player::CheckInventory()
 
 		index++;
 	}
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "-----------------" << std::endl;
+	std::cout << "0-Close Inventory" << std::endl;
+	std::cout << "-----------------" << std::endl;
 	m_inventorySize = index;
 	if (m_inventorySize < 1)
 	{
@@ -395,7 +409,6 @@ void Player::CheckInventory()
 	}
 	else
 	{
-		std::cout << " You can select your items ..." << std::endl;
 		InventoryAction();
 	}
 }
@@ -425,8 +438,7 @@ void Player::InventoryAction()
 	}
 	else
 	{
-		std::cout << " Invalid Input!" << std::endl;
-		CheckInventory();
+		CleanConsole();
 	}
 
 }
@@ -673,9 +685,7 @@ void Player::LoadGame(const std::string& filename, const std::string& itemFilena
 	while (!ifs.eof()) {
 		currentItem = ReadItemFromFile(ifs);
 		if (currentItem != nullptr && currentItem->GetItemName() != "") {
-			std::cout << "Loaded Item: " << currentItem->GetItemName() << std::endl;
 			AddItem(std::move(currentItem));
-			//m_inventoryItems.push_back(std::move(currentItem));
 		}
 	}
 	
@@ -689,7 +699,7 @@ void Player::LoadGame(const std::string& filename, const std::string& itemFilena
 			if(delimiterPos != std::string::npos)
 			{
 				std::string key = line.substr(0, delimiterPos);
-				std::string value = line.substr(delimiterPos + 2);
+				std::string value = line.substr(delimiterPos + 2); // it start from : and one space after that
 				if (key == "Health") {
 					m_playerStats.health = std::stoi(value);
 				}
