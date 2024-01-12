@@ -2,6 +2,8 @@
 #include <array>
 #include <vector>
 #include "Item.h"
+#include "Enemy.h"
+
 
 struct player_stats
 {
@@ -14,7 +16,6 @@ public:
 	int max_hungry = 100;
 };
 
-
 class Player
 {
 private:
@@ -22,6 +23,7 @@ private:
 	std::vector<std::unique_ptr<Item>> m_inventoryItems;
 	int m_inventorySize{ 0 };
 	std::unique_ptr<Item> m_spawnedItem;
+	std::unique_ptr<Enemy> m_spawnedEnemy;
 	
 	std::string m_playerName;
 	std::string m_playerSex;
@@ -32,7 +34,8 @@ private:
 	
 	std::string m_npc_name;
 	bool m_bStory2Available{ true };
-
+	bool m_bIsInAttack{ false };
+	bool m_bIsNPCInteract{ false };
 
 	// Private functions
 	void BeginPlay();
@@ -41,6 +44,7 @@ private:
 	void Search();
 	bool CanRest();
 	void MainDecision();
+	void CombatDecision();
 	int MakeRandomNumberInRange(int min, int max);
 	void SpawnItem();
 	void ItemAction();
@@ -55,6 +59,7 @@ public:
 	void QuitGame();
 	void InitializePlayerInformation();
 	void ShowPlayerStats(bool isFromLoadGame = false);
+	void ShowPlayerAndEnemyStats(std::unique_ptr<Enemy> enemy);
 	void Story(std::array<char, StorySize> story);
 	void AddItem(std::unique_ptr<Item> newItem);
 	void RemoveItem(Item& newItem);
@@ -80,11 +85,13 @@ public:
 
 
 
-	bool m_bIsNPCInteract{ false };
-
-
 	//Getter and Setter
 	bool GetIsQuit()const { return m_bQuit; }
-	std::string GetNPCName()const { return m_npc_name; }
+	bool IsInteractNPC()const { return m_bIsNPCInteract; }
+	bool IsInAttack()const { return m_bIsInAttack; }
+	[[nodiscard]] std::string GetNPCName()const { return m_npc_name; }
+
+
+	void SetIsInteractNPC(bool interact) { m_bIsNPCInteract = interact; }
 };
 

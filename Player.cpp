@@ -5,6 +5,7 @@
 #include <random> 
 #include <fstream>
 #include "Color.h"
+#include "Enemy.h"
 #include "MyLibrary.h"
 
 Player::Player() :
@@ -69,7 +70,7 @@ void Player::InitializePlayerInformation()
 
 void Player::ShowPlayerStats(bool isFromLoadGame)
 {
-	if(!isFromLoadGame)
+	if(!isFromLoadGame && !m_bIsInAttack)
 	{
 		std::cout << "------------------------" << std::endl;
 		std::cout << YELLOW_TEXT << m_playerName << RESET_COLOR << std::endl;
@@ -84,6 +85,19 @@ void Player::ShowPlayerStats(bool isFromLoadGame)
 		//Data loaded from save file!
 	}
 
+}
+
+void Player::ShowPlayerAndEnemyStats(std::unique_ptr<Enemy> enemy)
+{
+	CleanConsole("An orc stood in front of you, he is going to attack you !");
+	std::cout << "----------------------------------------------------------------------" << std::endl;
+	std::cout <<  m_playerName << "                        |          " << RED_TEXT << enemy->GetName() << RESET_COLOR << std::endl;
+	std::cout << "----------------------------------------------------------------------" << std::endl;
+	std::cout << "Level: " << m_playerStats.level << "                       |          " << "Level: " << enemy->GetLevel() << std::endl;
+	std::cout << "Health: " << m_playerStats.health << " / " << m_playerStats.max_health << "              |          " << "Health: " << enemy->GetHealth() << " / " << enemy->GetMaxHealth() << std::endl;
+	std::cout << "----------------------------------------------------------------------" << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
 }
 
 
@@ -119,46 +133,91 @@ void Player::QuitGame()
 
 void Player::MainDecision()
 {
+	if(!m_bIsInAttack)
+	{
+		std::cout << "What do you do: \n";
+		std::cout << "1 - Move " << std::endl;
+		std::cout << "2 - Rest " << std::endl;
+		std::cout << "3 - Search " << std::endl;
+		std::cout << "4 - Check Inventory " << std::endl;
+		std::cout << "5 - Menu " << std::endl;
+		std::string decision;
+		std::cin >> decision;
+
+		if (IsInputDigit(decision))
+		{
+			switch (int number = int(std::stod(decision)))
+			{
+			case 1:
+				Move();
+				break;
+			case 2:
+				Rest();
+				break;
+			case 3:
+				Search();
+				break;
+			case 4:
+				CheckInventory();
+				break;
+			case 5:
+				PauseMenu();
+				break;
+			default:
+				CleanConsole();
+				std::cout << "Please Type 1, 2, 3, 4 or 5 for your Decision ! " << std::endl;
+				break;
+			}
+		}
+		else
+		{
+			CleanConsole();
+			std::cout << "Please Type 1, 2, 3, 4 or 5 for your Decision ! " << std::endl;
+		}
+	}
+	else
+	{
+		CombatDecision();
+	}
+}
+
+void Player::CombatDecision()
+{
+	// todo
+	std::cout << "I need to continue work on this part!!! \n";
+
 	std::cout << "What do you do: \n";
-	std::cout << "1 - Move " << std::endl;
-	std::cout << "2 - Rest " << std::endl;
-	std::cout << "3 - Search " << std::endl;
-	std::cout << "4 - Check Inventory " << std::endl;
-	std::cout << "5 - Menu " << std::endl;
+	std::cout << "1 - Attack " << std::endl;
+	std::cout << "2 - Run! " << std::endl;
+	std::cout << "3 - Hide " << std::endl;
+	std::cout << "4 - Nothing " << std::endl;
 	std::string decision;
 	std::cin >> decision;
-
 	if (IsInputDigit(decision))
 	{
 		switch (int number = int(std::stod(decision)))
 		{
 		case 1:
-			Move();
 			break;
 		case 2:
-			Rest();
 			break;
 		case 3:
-			Search();
 			break;
 		case 4:
-			CheckInventory();
-			break;
-		case 5:
-			PauseMenu();
+			CleanConsole();
+			m_bIsInAttack = false;
 			break;
 		default:
 			CleanConsole();
-			std::cout << "Please Type 1, 2, 3, 4 or 5 for your Decision ! " << std::endl;
+			std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
 			break;
 		}
 	}
 	else
 	{
 		CleanConsole();
-		std::cout << "Please Type 1, 2, 3, 4 or 5 for your Decision ! " << std::endl;
+		std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
 	}
-
 }
 
 void Player::ItemAction()
@@ -223,6 +282,12 @@ void Player::Move()
 			Story(m_story2);
 			m_npc_name = "stranger";
 			NPCAction();
+		}
+		else if(randNumber == 5)
+		{
+			m_bIsInAttack = true;
+			m_spawnedEnemy = std::make_unique<Enemy>("Drawn",1, 79, 100);
+			ShowPlayerAndEnemyStats(std::move(m_spawnedEnemy));
 		}
 		else
 		{

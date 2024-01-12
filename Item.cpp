@@ -29,7 +29,7 @@ void Item::ItemAction(Player* player)
 		std::cout << "1 - Eat it " << std::endl;
 		std::cout << "2 - Throw it away " << std::endl;
 		std::cout << "3 - Do nothing " << std::endl;
-		if(player->m_bIsNPCInteract)
+		if(player->IsInteractNPC())
 		{
 			std::cout << "4 - Give it to " << player->GetNPCName() << std::endl;
 		}
@@ -54,12 +54,12 @@ void Item::ItemAction(Player* player)
 				break;
 
 			case 4:
-				if (player->m_bIsNPCInteract)
+				if (player->IsInteractNPC())
 				{
 					CleanConsole();
 					player->RemoveItem(*this);
 					player->Story(player->m_story3);
-					player->m_bIsNPCInteract = false;
+					player->SetIsInteractNPC(false);
 				}
 				else
 				{

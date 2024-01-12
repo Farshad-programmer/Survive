@@ -13,6 +13,15 @@
     <ClCompile Include="Item.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="MasterAI.cpp">
+      <Filter>Source\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>Source\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -33,6 +42,15 @@
     <ClInclude Include="MyLibrary.h">
       <Filter>Source\Other</Filter>
     </ClInclude>
+    <ClInclude Include="MasterAI.h">
+      <Filter>Source\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Source\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>Source\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -43,6 +61,9 @@
     </Filter>
     <Filter Include="Source\Other">
       <UniqueIdentifier>{0787a04f-fc27-4491-8013-802c1e030ebf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\AI">
+      <UniqueIdentifier>{a289a77c-0984-4381-bd96-15eae3a90885}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

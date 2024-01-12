@@ -1,4 +1,4 @@
-Player Name: ssdsdsdsdsdsdsd
+Player Name: Farshad
 Level: 1
-Health: 50
-Hungry: 22
+Health: 100
+Hungry: 100
