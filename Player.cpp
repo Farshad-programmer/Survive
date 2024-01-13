@@ -8,15 +8,20 @@
 #include "Enemy.h"
 #include "MyLibrary.h"
 
-Player::Player() :
-	m_playerName("Player"), m_playerSex("Male"), m_spawnedItem(nullptr)
+Player::Player() 
+	:m_playerName("Player"), m_playerSex("Male"), m_spawnedItem(nullptr)
 {
-
+	BeginPlay();
 }
+
 
 void Player::BeginPlay()
 {
-
+	m_combatComp = std::make_shared<CombatComponent>();
+	if(m_combatComp)
+	{
+		m_combatComp->m_player = this;
+	}
 }
 
 void Player::Tick()
@@ -26,6 +31,12 @@ void Player::Tick()
 
 void Player::InitializePlayerInformation()
 {
+	DrawImage("images/male-player-start.txt");
+	//PlaySound(TEXT("sounds/test.wav"), NULL, SND_FILENAME | SND_ASYNC);
+	//PlaySound(TEXT("sounds/test.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+	
+	std::cout << std::endl;
+	std::cout << std::endl;
 	std::cout << "What is your name? ";
 	std::string yourName;
 	std::cin >> yourName;
@@ -279,12 +290,15 @@ void Player::Move()
 		if (randNumber == 6 && m_bStory2Available)
 		{
 			m_bStory2Available = false;
+			DrawImage("images/injured-girl.txt");
 			Story(m_story2);
 			m_npc_name = "stranger";
 			NPCAction();
 		}
 		else if(randNumber == 5)
 		{
+			DrawImage("images/orc.txt");
+			Story(m_story4);
 			m_bIsInAttack = true;
 			m_spawnedEnemy = std::make_unique<Enemy>("Drawn",1, 79, 100);
 			ShowPlayerAndEnemyStats(std::move(m_spawnedEnemy));

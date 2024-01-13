@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <iomanip>
+#include <fstream>
+#include <windows.h>
 
 
 inline bool IsInputDigit(const std::string str) // it is a functions that checks only the first value of string 
@@ -69,3 +71,26 @@ inline void GameTitle()
         std::cout << std::endl;
     }
 }
+
+inline void DrawImage(const std::string& filename)
+{
+    std::string line = "";
+    std::ifstream inFile;
+    inFile.open(filename);
+    if (inFile.is_open())
+    {
+        while (getline(inFile, line))
+        {
+            std::cout << line << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "text image file failed to load!" << std::endl;
+    }
+    inFile.close();
+}
+
+// PlaySound(TEXT("sounds/test.wav"), NULL, SND_FILENAME | SND_ASYNC);
+//PlaySound(TEXT("path/to/your/sound.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP); loop
+//PlaySound(nullptr, NULL, 0); stop sounds

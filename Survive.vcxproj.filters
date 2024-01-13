@@ -22,6 +22,9 @@
     <ClCompile Include="NPC.cpp">
       <Filter>Source\AI</Filter>
     </ClCompile>
+    <ClCompile Include="CombatComponent.cpp">
+      <Filter>Source\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -51,6 +54,9 @@
     <ClInclude Include="NPC.h">
       <Filter>Source\AI</Filter>
     </ClInclude>
+    <ClInclude Include="CombatComponent.h">
+      <Filter>Source\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">
@@ -64,6 +70,9 @@
     </Filter>
     <Filter Include="Source\AI">
       <UniqueIdentifier>{a289a77c-0984-4381-bd96-15eae3a90885}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Components">
+      <UniqueIdentifier>{888f5e82-9444-472b-9ed0-26ab99fb7983}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
