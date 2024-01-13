@@ -15,7 +15,10 @@ void Game::BeginPlay()
 	m_player->MainMenu();
 	if(!m_player->GetIsQuit())
 	{
-		m_player->Story(m_player->m_story);
+		if(!m_player->IsFromLoadGame())
+		{
+			Story(m_player->m_story);
+		}
 		m_bUpdate = true;
 	}
 	

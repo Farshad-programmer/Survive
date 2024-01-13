@@ -28,7 +28,7 @@ private:
 	std::vector<std::unique_ptr<Item>> m_inventoryItems;
 	int m_inventorySize{ 0 };
 	std::unique_ptr<Item> m_spawnedItem;
-	std::unique_ptr<Enemy> m_spawnedEnemy;
+	std::shared_ptr<Enemy> m_spawnedEnemy;
 	std::shared_ptr<CombatComponent> m_combatComp;
 	
 	std::string m_playerName;
@@ -42,6 +42,7 @@ private:
 	bool m_bStory2Available{ true };
 	bool m_bIsInAttack{ false };
 	bool m_bIsNPCInteract{ false };
+	bool m_bIsFromLoadGame{ false };
 
 	// Private functions
 	void BeginPlay();
@@ -65,8 +66,7 @@ public:
 	void QuitGame();
 	void InitializePlayerInformation();
 	void ShowPlayerStats(bool isFromLoadGame = false);
-	void ShowPlayerAndEnemyStats(std::unique_ptr<Enemy> enemy);
-	void Story(std::array<char, StorySize> story);
+	void ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy);
 	void AddItem(std::unique_ptr<Item> newItem);
 	void RemoveItem(Item& newItem);
 	void UpdatePlayerStats(std::string propertyName, int value, bool add = true);
@@ -95,10 +95,11 @@ public:
 	bool GetIsQuit()const { return m_bQuit; }
 	bool IsInteractNPC()const { return m_bIsNPCInteract; }
 	bool IsInAttack()const { return m_bIsInAttack; }
+	bool IsFromLoadGame()const { return m_bIsFromLoadGame; }
 	[[nodiscard]] std::string GetNPCName()const { return m_npc_name; }
-
-
+	std::shared_ptr<Enemy> GetSpawnedEnemy()const { return m_spawnedEnemy; }
 	void SetIsInteractNPC(bool interact) { m_bIsNPCInteract = interact; }
+	void SetIsInAttack(bool isInAttack) { m_bIsInAttack = isInAttack; }
 };
 
 #endif // PLAYER_H_UNIQUE

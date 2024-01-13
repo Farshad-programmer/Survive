@@ -4,6 +4,7 @@
 
 #include <memory>
 #include "Player.h"
+#include "Enemy.h"
 
 
 class CombatComponent 
@@ -11,15 +12,16 @@ class CombatComponent
 
 public:
 	CombatComponent();
-	~CombatComponent();
+	~CombatComponent() = default;
 	friend Player;
 
 	Player* m_player {nullptr};
 
 
-
 private:
 
+	void CombatDecision(std::shared_ptr<Enemy> enemy) ;
+	void Attack(std::shared_ptr<Enemy> enemy);
 
 };
 

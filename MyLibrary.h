@@ -3,7 +3,12 @@
 #include <iomanip>
 #include <fstream>
 #include <windows.h>
+#include <chrono> // for miliseconds
+#include <conio.h> // for _getch() and _kbhit()
+#define RED_TEXT "\033[31m"
+#define RESET_COLOR "\033[0m"
 
+static constexpr std::size_t StorySize = 5000;
 
 inline bool IsInputDigit(const std::string str) // it is a functions that checks only the first value of string 
 {
@@ -89,6 +94,36 @@ inline void DrawImage(const std::string& filename)
         std::cout << "text image file failed to load!" << std::endl;
     }
     inFile.close();
+}
+
+inline void Story(std::array<char, StorySize> story,bool isRedColor = false)
+{
+    std::cout << "\nPress Enter to skip...\n";
+
+    long long type_writer_speed = 100LL;
+
+    for (const auto element : story)
+    {
+        if (_kbhit()) {
+            if (_getch() == '\r')
+            {
+                type_writer_speed = static_cast<long long>(0.1);
+            }
+        }
+        if(isRedColor)
+        {
+            std::cout << RED_TEXT << element << RESET_COLOR;
+        }
+        else
+        {
+            std::cout << element;
+        }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(type_writer_speed));
+    }
+
+    std::cout << "\n";
+    std::cout << "\n";
 }
 
 // PlaySound(TEXT("sounds/test.wav"), NULL, SND_FILENAME | SND_ASYNC);

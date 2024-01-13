@@ -58,7 +58,7 @@ void Item::ItemAction(Player* player)
 				{
 					CleanConsole();
 					player->RemoveItem(*this);
-					player->Story(player->m_story3);
+					Story(player->m_story3);
 					player->SetIsInteractNPC(false);
 				}
 				else

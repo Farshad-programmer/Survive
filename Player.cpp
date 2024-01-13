@@ -1,6 +1,4 @@
 #include "Player.h"
-#include <chrono> // for miliseconds
-#include <conio.h> // for _getch() and _kbhit()
 #include <string>
 #include <random> 
 #include <fstream>
@@ -98,9 +96,10 @@ void Player::ShowPlayerStats(bool isFromLoadGame)
 
 }
 
-void Player::ShowPlayerAndEnemyStats(std::unique_ptr<Enemy> enemy)
+void Player::ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy)
 {
-	CleanConsole("An orc stood in front of you, he is going to attack you !");
+	CleanConsole();
+	std::cout <<  RED_TEXT << "An " + enemy->GetName() +  " stood in front of you, he is going to attack you !" << RESET_COLOR << std::endl;
 	std::cout << "----------------------------------------------------------------------" << std::endl;
 	std::cout <<  m_playerName << "                        |          " << RED_TEXT << enemy->GetName() << RESET_COLOR << std::endl;
 	std::cout << "----------------------------------------------------------------------" << std::endl;
@@ -112,27 +111,7 @@ void Player::ShowPlayerAndEnemyStats(std::unique_ptr<Enemy> enemy)
 }
 
 
-void Player::Story(std::array<char, StorySize> story)
-{
-	std::cout << "\nPress Enter to skip...\n";
 
-	long long type_writer_speed = 100LL;
-
-	for (const auto element : story)
-	{
-		if (_kbhit()) {
-			if (_getch() == '\r')
-			{
-				type_writer_speed = static_cast<long long>(0.1);
-			}
-		}
-		std::cout << element;
-		std::this_thread::sleep_for(std::chrono::milliseconds(type_writer_speed));
-	}
-
-	std::cout << "\n";
-	std::cout << "\n";
-}
 
 void Player::QuitGame()
 {
@@ -194,41 +173,14 @@ void Player::MainDecision()
 
 void Player::CombatDecision()
 {
-	// todo
-	std::cout << "I need to continue work on this part!!! \n";
-
-	std::cout << "What do you do: \n";
-	std::cout << "1 - Attack " << std::endl;
-	std::cout << "2 - Run! " << std::endl;
-	std::cout << "3 - Hide " << std::endl;
-	std::cout << "4 - Nothing " << std::endl;
-	std::string decision;
-	std::cin >> decision;
-	if (IsInputDigit(decision))
+	if(m_combatComp)
 	{
-		switch (int number = int(std::stod(decision)))
+		if(m_spawnedEnemy)
 		{
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			CleanConsole();
-			m_bIsInAttack = false;
-			break;
-		default:
-			CleanConsole();
-			std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
-			break;
+			m_combatComp->CombatDecision(m_spawnedEnemy);
 		}
 	}
-	else
-	{
-		CleanConsole();
-		std::cout << "Please Type 1, 2, 3 or 4 for your Decision ! " << std::endl;
-	}
+	
 }
 
 void Player::ItemAction()
@@ -298,10 +250,10 @@ void Player::Move()
 		else if(randNumber == 5)
 		{
 			DrawImage("images/orc.txt");
-			Story(m_story4);
+			Story(m_story4,true);
 			m_bIsInAttack = true;
-			m_spawnedEnemy = std::make_unique<Enemy>("Drawn",1, 79, 100);
-			ShowPlayerAndEnemyStats(std::move(m_spawnedEnemy));
+			m_spawnedEnemy = std::make_unique<Enemy>("Orc",1, 79, 100);
+			ShowPlayerAndEnemyStats(m_spawnedEnemy); 
 		}
 		else
 		{
@@ -623,6 +575,7 @@ void Player::MainMenu()
 			CleanConsole();
 			break;
 		case 2:
+			m_bIsFromLoadGame = true;
 			LoadGame("save/base_save.txt", "save/item_save.txt");
 			break;
 		case 3:
