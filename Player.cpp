@@ -1,7 +1,6 @@
 
 #include "Player.h"
 #include <string>
-#include <random> 
 #include <fstream>
 #include "Color.h"
 #include "MyLibrary.h"
@@ -353,11 +352,13 @@ void Player::SpawnItem()
 	ItemAction();
 }
 
-void Player::AddItem(std::unique_ptr<Item> newItem)
+void Player::AddItem(std::unique_ptr<Item> newItem, bool cleanConsole)
 {
 	if (newItem == nullptr) return;
 
-	CleanConsole();
+	if(cleanConsole)
+		CleanConsole();
+
 	bool itemFound = false;
 	if (newItem->IsItemStackable())
 	{
@@ -523,6 +524,7 @@ bool Player::IsPlayerDeath()
 
 void Player::ReceiveDamage(int damage)
 {
+	PlaySound(TEXT("sounds/Battle_Roar_Hit1.wav"), NULL, SND_FILENAME | SND_ASYNC);
 	m_playerStats.health -= damage;
 	std::cout << "You Receive " <<  YELLOW_TEXT << damage  << RESET_COLOR << " damage from the enemy " << std::endl;
 	ShowPlayerAndEnemyStats(m_spawnedEnemy, false);
@@ -535,13 +537,6 @@ void Player::ReceiveDamage(int damage)
 	}
 }
 
-int Player::MakeRandomNumberInRange(int min, int max)
-{
-	std::mt19937 gen(std::random_device{}());
-	std::uniform_int_distribution<> distribution(min, max);// make a distribution
-
-	return distribution(gen);
-}
 
 void Player::UpdatePlayerStats(std::string propertyName, int value, bool add)
 {

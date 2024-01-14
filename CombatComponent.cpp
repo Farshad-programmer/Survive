@@ -66,12 +66,12 @@ void CombatComponent::Attack(std::shared_ptr<Enemy>& enemy, bool cleanConsole)
 	std::cin >> decision;
 	if (!IsInputDigit(decision))
 	{
-		if(decision == "s")
+		if(decision == "s" || decision == "S")
 		{
 			CleanConsole();
 			StrengthAttack(enemy);
 		}
-		else if(decision == "m")
+		else if(decision == "m" || decision == "M")
 		{
 			CleanConsole();
 			std::cout << "You attacked with magic to " + enemy->GetName() << std::endl;
@@ -118,9 +118,16 @@ void CombatComponent::ApplyDamageToEnemy(unsigned damage, std::shared_ptr<Enemy>
 	{
 		if(!enemy->GetIsHasStory())
 		{
+			PlaySound(TEXT("sounds/Battle_Roar_death_1.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			std::cout << "You Killed him! " << std::endl;
+			ObtainItem();
 			m_player->SetCanBackCombatDecision(true);
 			m_player->SetIsInAttack(false);
+			const int randNumber = MakeRandomNumberInRange(1, 1);
+			if(randNumber == 1)
+			{
+				// todo : spawn an item and add it to the player inventory
+			}
 			if (enemy.use_count() == 1)
 			{
 				enemy.reset();
@@ -131,7 +138,9 @@ void CombatComponent::ApplyDamageToEnemy(unsigned damage, std::shared_ptr<Enemy>
 			Story(enemy->GetAIAfterDeathStory());
 			m_player->SetCanBackCombatDecision(true);
 			m_player->SetIsInAttack(false);
+			PlaySound(TEXT("sounds/Battle_Roar_death_1.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			std::cout << "You Killed him! " << std::endl;
+			ObtainItem();
 			if (enemy.use_count() == 1)
 			{
 				enemy.reset();
@@ -144,11 +153,11 @@ void CombatComponent::ChangeTurn(const std::shared_ptr<Enemy>& enemy)
 {
 	std::cout << "The combat continue , now its turn " << RED_TEXT << enemy->GetName() << RESET_COLOR << " to attack you !" << std::endl;
 	m_player->ShowPlayerAndEnemyStats(enemy, false);
-	std::cout << "Type 'turn' to observe the enemy's turn.  " << std::endl;
+	std::cout << "[T]urn ----> to observe the enemy's turn.  " << std::endl;
 
 	std::string decision;
 	std::cin >> decision;
-	if (decision == "turn")
+	if (decision == "t" || decision == "T")
 	{
 		CleanConsole();
 		enemy->EnemyAttackPlayer(*m_player);
@@ -159,6 +168,35 @@ void CombatComponent::ChangeTurn(const std::shared_ptr<Enemy>& enemy)
 		ChangeTurn(enemy);
 	}
 
+}
+
+void CombatComponent::ObtainItem()
+{
+	switch (const int randNum = MakeRandomNumberInRange(1, 5))
+	{
+	case 1:
+		m_spawnedLootItem = std::make_unique<Item>("apple", EItemType::food);
+		break;
+	case 2:
+		m_spawnedLootItem = std::make_unique<Item>("banana", EItemType::food);
+		break;
+	case 3:
+		m_spawnedLootItem = std::make_unique<Item>("corn", EItemType::food);
+		break;
+	case 4:
+		m_spawnedLootItem = std::make_unique<Item>("soup", EItemType::food, 1, false);
+		break;
+	case 5:
+		m_spawnedLootItem = std::make_unique<Item>("meat", EItemType::food);
+		break;
+	default:
+		m_spawnedLootItem = std::make_unique<Item>("apple", EItemType::food);
+		break;
+	}
+
+
+	std::cout << "You obtained an " << m_spawnedLootItem->GetItemName() << std::endl;
+	m_player->AddItem(std::move(m_spawnedLootItem),false);
 }
 
 

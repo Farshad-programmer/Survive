@@ -9,6 +9,8 @@
 #include "Color.h"
 #include <chrono> // for miliseconds
 #include <conio.h> // for _getch() and _kbhit()
+#include <random>
+
 
 static constexpr std::size_t StorySize = 5000;
 
@@ -128,7 +130,13 @@ inline void Story(std::array<char, StorySize> story,bool isRedColor = false)
     std::cout << "\n";
 }
 
+inline int MakeRandomNumberInRange(int min, int max)
+{
+    std::mt19937 gen(std::random_device{}());
+    std::uniform_int_distribution<> distribution(min, max);// make a distribution
 
+    return distribution(gen);
+}
 
 
 // PlaySound(TEXT("sounds/test.wav"), NULL, SND_FILENAME | SND_ASYNC);

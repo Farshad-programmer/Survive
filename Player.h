@@ -53,7 +53,6 @@ private:
 	bool CanRest();
 	void MainDecision();
 	void CombatDecision();
-	int MakeRandomNumberInRange(int min, int max);
 	void SpawnItem();
 	void ItemAction();
 	void CheckInventory();
@@ -70,7 +69,7 @@ public:
 	void InitializePlayerInformation();
 	void ShowPlayerStats(bool isFromLoadGame = false);
 	void ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy,bool cleanConsole = true);
-	void AddItem(std::unique_ptr<Item> newItem);
+	void AddItem(std::unique_ptr<Item> newItem, bool cleanConsole = true);
 	void RemoveItem(Item& newItem);
 	void UpdatePlayerStats(std::string propertyName, int value, bool add = true);
 	void MainMenu();
