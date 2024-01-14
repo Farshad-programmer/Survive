@@ -1,17 +1,12 @@
 #include "NPC.h"
 
-NPC::NPC(std::string name,int level, int health, int max_health)
-	:MasterAI(name,level,health,max_health)
+NPC::NPC(std::string name,int level, int health, int max_health, bool hasStory)
+	:MasterAI(name,level,health,max_health, hasStory)
 {
 
 }
 
-void NPC::Beginplay()
+NPC::~NPC()
 {
-	MasterAI::Beginplay();
-}
 
-void NPC::Tick()
-{
-	MasterAI::Tick();
 }

@@ -1,10 +1,11 @@
+
 #include "Player.h"
 #include <string>
 #include <random> 
 #include <fstream>
 #include "Color.h"
-#include "Enemy.h"
 #include "MyLibrary.h"
+
 
 Player::Player() 
 	:m_playerName("Player"), m_playerSex("Male"), m_spawnedItem(nullptr)
@@ -96,10 +97,11 @@ void Player::ShowPlayerStats(bool isFromLoadGame)
 
 }
 
-void Player::ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy)
+void Player::ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy,bool cleanConsole)
 {
-	CleanConsole();
-	std::cout <<  RED_TEXT << "An " + enemy->GetName() +  " stood in front of you, he is going to attack you !" << RESET_COLOR << std::endl;
+	if(cleanConsole) 
+		CleanConsole();
+
 	std::cout << "----------------------------------------------------------------------" << std::endl;
 	std::cout <<  m_playerName << "                        |          " << RED_TEXT << enemy->GetName() << RESET_COLOR << std::endl;
 	std::cout << "----------------------------------------------------------------------" << std::endl;
@@ -167,7 +169,11 @@ void Player::MainDecision()
 	}
 	else
 	{
-		CombatDecision();
+		if(m_bCanBackToCombatDecision) // this variable need to be reset when a fight finished with killing an enemy!
+		{
+			CombatDecision();
+		}
+		
 	}
 }
 
@@ -250,10 +256,13 @@ void Player::Move()
 		else if(randNumber == 5)
 		{
 			DrawImage("images/orc.txt");
-			Story(m_story4,true);
-			m_bIsInAttack = true;
-			m_spawnedEnemy = std::make_unique<Enemy>("Orc",1, 79, 100);
-			ShowPlayerAndEnemyStats(m_spawnedEnemy); 
+			m_spawnedEnemy = std::make_unique<Enemy>("Orc", 1, 79, 100, true);
+			if(m_spawnedEnemy)
+			{
+				Story(m_spawnedEnemy->GetAIStory(), true);
+				m_bIsInAttack = true;
+				ShowPlayerAndEnemyStats(m_spawnedEnemy);
+			}
 		}
 		else
 		{
@@ -499,6 +508,29 @@ void Player::NPCAction()
 			CleanConsole();
 			std::cout << "Please Type 1 or 2 for your action ! " << std::endl;
 			ItemAction();
+		}
+	}
+}
+
+bool Player::IsPlayerDeath()
+{
+	if(m_playerStats.health <= 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+void Player::ReceiveDamage(int damage)
+{
+	m_playerStats.health -= damage;
+	std::cout << "You Receive " <<  YELLOW_TEXT << damage  << RESET_COLOR << " damage from the enemy " << std::endl;
+	ShowPlayerAndEnemyStats(m_spawnedEnemy, false);
+	if(!IsPlayerDeath())
+	{
+		if(m_combatComp)
+		{
+			m_combatComp->Attack(m_spawnedEnemy,false);
 		}
 	}
 }

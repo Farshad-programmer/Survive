@@ -57,6 +57,9 @@
     <ClInclude Include="CombatComponent.h">
       <Filter>Source\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Story.h">
+      <Filter>Source\Other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

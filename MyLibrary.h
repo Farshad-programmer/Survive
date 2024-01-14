@@ -1,12 +1,14 @@
 #pragma once
+
+
+
 #include <string>
 #include <iomanip>
 #include <fstream>
 #include <windows.h>
+#include "Color.h"
 #include <chrono> // for miliseconds
 #include <conio.h> // for _getch() and _kbhit()
-#define RED_TEXT "\033[31m"
-#define RESET_COLOR "\033[0m"
 
 static constexpr std::size_t StorySize = 5000;
 
@@ -125,6 +127,9 @@ inline void Story(std::array<char, StorySize> story,bool isRedColor = false)
     std::cout << "\n";
     std::cout << "\n";
 }
+
+
+
 
 // PlaySound(TEXT("sounds/test.wav"), NULL, SND_FILENAME | SND_ASYNC);
 //PlaySound(TEXT("path/to/your/sound.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP); loop

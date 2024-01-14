@@ -1,3 +1,7 @@
+
+#ifndef Color_H
+#define Color_H
+
 #include <Windows.h>
 
 #define RESET_COLOR "\033[0m"
@@ -36,6 +40,9 @@ inline void SetConsoleFont(int fontSize) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetCurrentConsoleFontEx(hConsole, FALSE, &fontInfo);
 }
+
+
+#endif // Color_H
 
 
 // 2 samples

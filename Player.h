@@ -43,6 +43,7 @@ private:
 	bool m_bIsInAttack{ false };
 	bool m_bIsNPCInteract{ false };
 	bool m_bIsFromLoadGame{ false };
+	bool m_bCanBackToCombatDecision{ true };
 
 	// Private functions
 	void BeginPlay();
@@ -58,6 +59,8 @@ private:
 	void CheckInventory();
 	void InventoryAction();
 	void NPCAction();
+	bool IsPlayerDeath();
+
 public:
 	Player();
 	~Player() = default;
@@ -66,7 +69,7 @@ public:
 	void QuitGame();
 	void InitializePlayerInformation();
 	void ShowPlayerStats(bool isFromLoadGame = false);
-	void ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy);
+	void ShowPlayerAndEnemyStats(std::shared_ptr<Enemy> enemy,bool cleanConsole = true);
 	void AddItem(std::unique_ptr<Item> newItem);
 	void RemoveItem(Item& newItem);
 	void UpdatePlayerStats(std::string propertyName, int value, bool add = true);
@@ -75,7 +78,7 @@ public:
 	void AreYouSure();
 	void SaveGame(const std::string& filename, const std::string& itemFilename);
 	void LoadGame(const std::string& filename, const std::string& itemFilename);
-
+	void ReceiveDamage(int damage);
 	std::unique_ptr<Item> ReadItemFromFile(std::ifstream& ifs)
 	{
 		std::unique_ptr<Item> item = std::make_unique<Item>();
@@ -88,7 +91,6 @@ public:
 	std::array<char, StorySize> m_story {"In the heart of an untouched forest, full of mysteries and wonders, You woke up from your slumber. Opening your eyes, you found various silver lights shimmering in the darkness at the corners and edges of the forest. You moved towards these lights and entered a magical world you had never seen before..." };
 	std::array<char, StorySize> m_story2 {"You reached an abandoned house nearby, where a faint fire was burning. A bit closer, there was a girl, an Elf by the fire, lying in a pool of blood. However, she was still alive. In a trembling voice, she said, I'm hungry." };
 	std::array<char, StorySize> m_story3 {"She said , Thank you, you saved me. I think there's still hope left. Let's move on. I'm Rana. I can't stay here now; there's someone I need to find. Otherwise, darkness will soon engulf everything. I hope to see you again." };
-	std::array<char, StorySize> m_story4{"An orc stands before you, poised to strike! Brace yourself, for the challenge of a close encounter awaits. The orc advances with an aggressive stance, wielding its blade in trembling hands. Confronting this formidable and unpredictable force, your combat skills are put to the test. Now is the time to employ wit and tactics to face this orc, making crucial decisions at the right moments. " };
 
 
 	//Getter and Setter
@@ -96,10 +98,12 @@ public:
 	bool IsInteractNPC()const { return m_bIsNPCInteract; }
 	bool IsInAttack()const { return m_bIsInAttack; }
 	bool IsFromLoadGame()const { return m_bIsFromLoadGame; }
+	player_stats GetPlayerStats()const { return m_playerStats; }
 	[[nodiscard]] std::string GetNPCName()const { return m_npc_name; }
 	std::shared_ptr<Enemy> GetSpawnedEnemy()const { return m_spawnedEnemy; }
 	void SetIsInteractNPC(bool interact) { m_bIsNPCInteract = interact; }
 	void SetIsInAttack(bool isInAttack) { m_bIsInAttack = isInAttack; }
+	void SetCanBackCombatDecision(bool canBack) { m_bCanBackToCombatDecision = canBack; }
 };
 
 #endif // PLAYER_H_UNIQUE
